@@ -951,21 +951,42 @@ function showTab(tabName) {
 }
 
 // Initialiser l'application
-document.addEventListener('DOMContentLoaded', () => {
-    window.cartographyApp = new CartographyApp();
+console.log('🔥 Setting up DOMContentLoaded listener...');
+console.log('🔥 Document ready state:', document.readyState);
+
+function initApp() {
+    console.log('🔥 initApp called!');
+    console.log('🔥 About to create CartographyApp...');
     
-    // Charger la liste des projets sauvegardés
-    window.cartographyApp.loadSavedProjects();
+    try {
+        window.cartographyApp = new CartographyApp();
+        console.log('✅ CartographyApp created successfully');
     
-    // Event listener pour le bouton de chargement
-    document.getElementById('load-project-btn').addEventListener('click', () => {
-        window.cartographyApp.loadSelectedProject();
-    });
-    
-    // Diagnostic après 2 secondes pour s'assurer que tout est chargé
-    setTimeout(() => {
-        window.cartographyApp.debugFileInputs();
-    }, 2000);
-});
+        // Charger la liste des projets sauvegardés
+        window.cartographyApp.loadSavedProjects();
+        
+        // Event listener pour le bouton de chargement
+        document.getElementById('load-project-btn').addEventListener('click', () => {
+            window.cartographyApp.loadSelectedProject();
+        });
+        
+        // Diagnostic après 2 secondes pour s'assurer que tout est chargé
+        setTimeout(() => {
+            window.cartographyApp.debugFileInputs();
+        }, 2000);
+        
+    } catch (error) {
+        console.error('❌ Error creating CartographyApp:', error);
+    }
+}
+
+// Si le DOM est déjà prêt, initialiser immédiatement
+if (document.readyState === 'loading') {
+    console.log('🔥 DOM is still loading, waiting for DOMContentLoaded...');
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    console.log('🔥 DOM is already loaded, initializing immediately...');
+    initApp();
+}
 
 console.log('🔥 JavaScript file completely loaded!');
