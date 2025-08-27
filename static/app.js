@@ -1,5 +1,10 @@
+// Test immédiat pour vérifier si le JS fonctionne
+console.log('🔥 JavaScript file loaded and executing!');
+console.log('🔥 Location:', window.location.href);
+
 class CartographyApp {
     constructor() {
+        console.log('🚀 CartographyApp constructor called - Version 2024-08-27-14h30');
         this.currentProject = null;
         this.currentJob = null;
         this.results = null;
@@ -962,3 +967,5 @@ document.addEventListener('DOMContentLoaded', () => {
         window.cartographyApp.debugFileInputs();
     }, 2000);
 });
+
+console.log('🔥 JavaScript file completely loaded!');
