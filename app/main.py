@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -24,15 +24,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static files - adjusted for root_path
+# Static files - handle root_path properly
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
 static_dir = os.path.abspath(static_dir)  # Chemin absolu
+
 if os.path.exists(static_dir):
-    # Mount static files on /static regardless of root_path
-    # The root_path is handled by the reverse proxy
+    # Mount static files at /static (works with and without root_path)
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
     print(f"📁 Static files mounted from: {static_dir}")
-    print(f"🌐 Static files available at: {ROOT_PATH}/static/")
+    print(f"🌐 Static files available at: /static/ and {ROOT_PATH}/static/")
 
 app.include_router(api_router, prefix="/api/v1")
 
@@ -52,8 +52,17 @@ async def debug_paths():
         "static_exists": os.path.exists(static_dir),
         "app_js_exists": os.path.exists(os.path.join(static_dir, "app.js")),
         "index_html_exists": os.path.exists(os.path.join(static_dir, "index.html")),
-        "expected_static_url": f"{ROOT_PATH}/static/app.js" if ROOT_PATH else "/static/app.js"
+        "expected_static_url": f"{ROOT_PATH}/static/app.js" if ROOT_PATH else "/static/app.js",
+        "files_in_static": os.listdir(static_dir) if os.path.exists(static_dir) else []
     }
+
+# Route de fallback pour app.js si le mount static ne fonctionne pas
+@app.get("/static/app.js")
+async def serve_app_js():
+    app_js_path = os.path.join(static_dir, "app.js")
+    if os.path.exists(app_js_path):
+        return FileResponse(app_js_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="app.js not found")
 
 if __name__ == "__main__":
     import uvicorn
