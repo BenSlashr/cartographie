@@ -24,17 +24,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static files - handle root_path properly
+# Static files configuration
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
-static_dir = os.path.abspath(static_dir)  # Chemin absolu
+static_dir = os.path.abspath(static_dir)
 
-if os.path.exists(static_dir):
-    # Mount static files at /static (works with and without root_path)
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
-    print(f"📁 Static files mounted from: {static_dir}")
-    print(f"🌐 Static files available at: /static/ and {ROOT_PATH}/static/")
-
-app.include_router(api_router, prefix="/api/v1")
+# Routes explicites AVANT le mount static (priorité)
+@app.get("/static/app.js")
+async def serve_app_js():
+    app_js_path = os.path.join(static_dir, "app.js")
+    print(f"🎯 Serving app.js from: {app_js_path}")
+    print(f"🎯 File exists: {os.path.exists(app_js_path)}")
+    if os.path.exists(app_js_path):
+        return FileResponse(app_js_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="app.js not found")
 
 @app.get("/")
 async def serve_index():
@@ -56,13 +58,13 @@ async def debug_paths():
         "files_in_static": os.listdir(static_dir) if os.path.exists(static_dir) else []
     }
 
-# Route de fallback pour app.js si le mount static ne fonctionne pas
-@app.get("/static/app.js")
-async def serve_app_js():
-    app_js_path = os.path.join(static_dir, "app.js")
-    if os.path.exists(app_js_path):
-        return FileResponse(app_js_path, media_type="application/javascript")
-    raise HTTPException(status_code=404, detail="app.js not found")
+# Mount static files APRÈS les routes explicites
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+    print(f"📁 Static files mounted from: {static_dir}")
+    print(f"🌐 Static files available at: /static/ and {ROOT_PATH}/static/")
+
+app.include_router(api_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn
