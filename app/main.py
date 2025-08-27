@@ -24,12 +24,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Static files
+# Static files - adjusted for root_path
 static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
 static_dir = os.path.abspath(static_dir)  # Chemin absolu
 if os.path.exists(static_dir):
+    # Mount static files on /static regardless of root_path
+    # The root_path is handled by the reverse proxy
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
     print(f"📁 Static files mounted from: {static_dir}")
+    print(f"🌐 Static files available at: {ROOT_PATH}/static/")
 
 app.include_router(api_router, prefix="/api/v1")
 
@@ -39,6 +42,18 @@ async def serve_index():
     if os.path.exists(static_index):
         return FileResponse(static_index)
     return {"message": "Interface web non disponible. Utilisez /docs pour l'API."}
+
+@app.get("/debug/paths")
+async def debug_paths():
+    """Debug endpoint pour vérifier les chemins en production"""
+    return {
+        "root_path": ROOT_PATH,
+        "static_dir": static_dir,
+        "static_exists": os.path.exists(static_dir),
+        "app_js_exists": os.path.exists(os.path.join(static_dir, "app.js")),
+        "index_html_exists": os.path.exists(os.path.join(static_dir, "index.html")),
+        "expected_static_url": f"{ROOT_PATH}/static/app.js" if ROOT_PATH else "/static/app.js"
+    }
 
 if __name__ == "__main__":
     import uvicorn

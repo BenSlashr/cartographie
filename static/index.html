@@ -405,6 +405,13 @@
         </div>
     </div>
 
-    <script src="/static/app.js"></script>
+    <script>
+        // Détecter le base path automatiquement
+        const basePath = window.location.pathname.replace(/\/$/, '').replace('/index.html', '') || '';
+        const scriptSrc = basePath + '/static/app.js';
+        const script = document.createElement('script');
+        script.src = scriptSrc;
+        document.head.appendChild(script);
+    </script>
 </body>
 </html>

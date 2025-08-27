@@ -89,3 +89,17 @@ L'outil utilise l'API d'embeddings:
 - Interface: `https://ndd.fr/cartographie/`  
 - API Docs: `https://ndd.fr/cartographie/docs`  
 - Health: `https://ndd.fr/cartographie/api/v1/projects/`
+- Debug: `https://ndd.fr/cartographie/debug/paths` (vérifier les chemins)
+
+### Debug en cas de problème
+
+Si JavaScript ne charge pas (erreur `Unexpected token '<'`):
+
+1. **Vérifier les chemins**: `curl https://ndd.fr/cartographie/debug/paths`
+2. **Tester l'accès statique**: `curl https://ndd.fr/cartographie/static/app.js`
+3. **Vérifier les logs Docker**: `docker logs cartographie`
+
+**Solutions courantes:**
+- Vérifier que `ROOT_PATH=/cartographie` est bien défini
+- Vérifier que Caddy redirige bien vers le container
+- S'assurer que les fichiers statiques sont copiés dans l'image Docker
