@@ -9,6 +9,8 @@ class CartographyApp {
         this.basePath = window.location.pathname.replace(/\/$/, '').replace('/index.html', '') || '';
         this.apiBase = this.basePath + '/api/v1';
         
+        console.log('🌐 Current URL:', window.location.href);
+        console.log('🌐 Pathname:', window.location.pathname);
         console.log('🌐 BasePath:', this.basePath);
         console.log('🌐 API Base:', this.apiBase);
         
@@ -73,6 +75,8 @@ class CartographyApp {
         const file = event.target.files[0];
         const uploadArea = document.getElementById(`${type}-upload`);
         
+        console.log(`📁 File selected for ${type}:`, file ? file.name : 'none');
+        
         if (file) {
             uploadArea.classList.add('file-selected');
             const icon = uploadArea.querySelector('.file-upload-icon');
@@ -96,11 +100,25 @@ class CartographyApp {
         const pagesFile = document.getElementById('pages-file').files[0];
         const analyzeBtn = document.getElementById('analyze-btn');
         
+        console.log('🔍 Checking analyze button state. Pages file:', pagesFile ? pagesFile.name : 'none');
+        
         // Au minimum le fichier pages est requis
         analyzeBtn.disabled = !pagesFile;
+        
+        console.log('🔍 Analyze button disabled:', analyzeBtn.disabled);
     }
     
     async startAnalysis() {
+        console.log('🎯 startAnalysis called!');
+        console.log('🎯 Current project:', this.currentProject);
+        
+        // Récupérer les fichiers depuis le DOM
+        const pagesFile = document.getElementById('pages-file').files[0];
+        const linksFile = document.getElementById('links-file').files[0];
+        
+        console.log('🎯 Pages file:', pagesFile ? pagesFile.name : 'none');
+        console.log('🎯 Links file:', linksFile ? linksFile.name : 'none');
+        
         try {
             this.hideError();
             this.showProgress();
@@ -133,6 +151,8 @@ class CartographyApp {
     }
     
     async createProject() {
+        console.log('🚀 Creating project via:', `${this.apiBase}/projects/`);
+        
         const response = await fetch(`${this.apiBase}/projects/`, {
             method: 'POST',
             headers: {
@@ -143,6 +163,8 @@ class CartographyApp {
                 description: 'Analyse via interface web'
             })
         });
+        
+        console.log('📡 Create project response:', response.status, response.statusText);
         
         if (!response.ok) {
             throw new Error('Impossible de créer le projet');
