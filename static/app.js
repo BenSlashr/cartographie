@@ -23,15 +23,36 @@ class CartographyApp {
         const linksFile = document.getElementById('links-file');
         const analyzeBtn = document.getElementById('analyze-btn');
         
-        pagesFile.addEventListener('change', (e) => this.handleFileSelect(e, 'pages'));
-        linksFile.addEventListener('change', (e) => this.handleFileSelect(e, 'links'));
+        console.log('🔌 Elements found:');
+        console.log('📄 Pages file input:', pagesFile);
+        console.log('🔗 Links file input:', linksFile);
+        console.log('🚀 Analyze button:', analyzeBtn);
+        
+        if (pagesFile) {
+            pagesFile.addEventListener('change', (e) => this.handleFileSelect(e, 'pages'));
+            console.log('✅ Pages file listener attached');
+        } else {
+            console.error('❌ Pages file input not found!');
+        }
+        
+        if (linksFile) {
+            linksFile.addEventListener('change', (e) => this.handleFileSelect(e, 'links'));
+            console.log('✅ Links file listener attached');
+        } else {
+            console.error('❌ Links file input not found!');
+        }
         
         // Drag and drop
         this.setupDragAndDrop('pages-upload', pagesFile);
         this.setupDragAndDrop('links-upload', linksFile);
         
         // Analyze button
-        analyzeBtn.addEventListener('click', () => this.startAnalysis());
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', () => this.startAnalysis());
+            console.log('✅ Analyze button listener attached');
+        } else {
+            console.error('❌ Analyze button not found!');
+        }
         
         // Bouton test mock (ajouté temporairement)
         const testMockBtn = document.createElement('button');
@@ -859,6 +880,34 @@ class CartographyApp {
             alert('Erreur lors du chargement de l\'analyse');
         }
     }
+
+    debugFileInputs() {
+        console.log('🔍 === DIAGNOSTIC FILE INPUTS ===');
+        
+        // Vérifier que les éléments HTML existent
+        const pagesUpload = document.getElementById('pages-upload');
+        const linksUpload = document.getElementById('links-upload');
+        const pagesFile = document.getElementById('pages-file');
+        const linksFile = document.getElementById('links-file');
+        
+        console.log('📄 Pages upload div:', pagesUpload);
+        console.log('🔗 Links upload div:', linksUpload);
+        console.log('📄 Pages file input:', pagesFile);
+        console.log('🔗 Links file input:', linksFile);
+        
+        // Test de clic programmatique
+        if (pagesFile) {
+            console.log('🖱️ Testing pages file click...');
+            try {
+                pagesFile.click();
+                console.log('✅ Pages file click worked');
+            } catch (e) {
+                console.error('❌ Pages file click failed:', e);
+            }
+        }
+        
+        console.log('🔍 === END DIAGNOSTIC ===');
+    }
 }
 
 // Fonction pour changer d'onglet
@@ -907,4 +956,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('load-project-btn').addEventListener('click', () => {
         window.cartographyApp.loadSelectedProject();
     });
+    
+    // Diagnostic après 2 secondes pour s'assurer que tout est chargé
+    setTimeout(() => {
+        window.cartographyApp.debugFileInputs();
+    }, 2000);
 });
