@@ -4,7 +4,7 @@
 
 ### Variables d'environnement nécessaires
 
-Pour déploiement sur `ndd.fr/cartographie/`:
+Pour déploiement sur `outils.agence-slashr.fr/cartographie/`:
 
 ```bash
 # Dans votre docker-compose.yml ou configuration:
@@ -48,10 +48,10 @@ services:
 
 ### Configuration Caddy
 
-Pour servir sur `ndd.fr/cartographie/`:
+Pour servir sur `outils.agence-slashr.fr/cartographie/`:
 
 ```caddyfile
-ndd.fr {
+outils.agence-slashr.fr {
     # Autres routes...
     
     handle_path /cartographie/* {
@@ -86,17 +86,17 @@ L'outil utilise l'API d'embeddings:
 
 ### Accès
 
-- Interface: `https://ndd.fr/cartographie/`  
-- API Docs: `https://ndd.fr/cartographie/docs`  
-- Health: `https://ndd.fr/cartographie/api/v1/projects/`
-- Debug: `https://ndd.fr/cartographie/debug/paths` (vérifier les chemins)
+- Interface: `https://outils.agence-slashr.fr/cartographie/`  
+- API Docs: `https://outils.agence-slashr.fr/cartographie/docs`  
+- Health: `https://outils.agence-slashr.fr/cartographie/api/v1/projects/`
+- Debug: `https://outils.agence-slashr.fr/cartographie/debug/paths` (vérifier les chemins)
 
 ### Debug en cas de problème
 
 Si JavaScript ne charge pas (erreur `Unexpected token '<'`):
 
-1. **Vérifier les chemins**: `curl https://ndd.fr/cartographie/debug/paths`
-2. **Tester l'accès statique**: `curl https://ndd.fr/cartographie/static/app.js`
+1. **Vérifier les chemins**: `curl https://outils.agence-slashr.fr/cartographie/debug/paths`
+2. **Tester l'accès statique**: `curl https://outils.agence-slashr.fr/cartographie/static/app.js`
 3. **Vérifier les logs Docker**: `docker logs cartographie`
 
 **Solutions courantes:**
